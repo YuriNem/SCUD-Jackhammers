@@ -6,13 +6,13 @@ import sys
 import moduleHull
 
 # Модуль для сортировки точек против часовой стрелки
-import moduleSortCounterClockwise
+import moduleCounterClockwise
 
-# Модуль для нахлждения площади
+# Модуль для нахождения площади
 import moduleSquare
 
 # Модуль для проверки расположения точки внутри
-import moduleIsPointInside
+import modulePointInside
 
 # Открытие входного файла на чтение
 fileInput = open(sys.argv[1], 'r')
@@ -23,36 +23,10 @@ bordersCountries = []
 # Площадь отключения
 squareOutage = 0
 
-while True:
-    # Чтение колличества построек
-    amountBuildings = int(fileInput.readline())
+# Колличество построек
+amountBuildings = int(fileInput.readline())
 
-    # Начало чтения координат рокет
-    if amountBuildings == -1:
-        while True:
-            # Проверка конца файла
-            line = fileInput.readline()
-            if line == '':
-                break
-
-            # Чтение координат x и y рокеты и создание точки
-            # с такими координатами
-            x, y = map(int, line.split())
-            point = [x, y]
-
-            # Проверка всех стран на расположение точки внутри них
-            for i in range(len(bordersCountries)):
-                if moduleIsPointInside.isPointInside(point,\
-                 bordersCountries[i], len(bordersCountries[i])):
-                    # Если точка расположена в стране,
-                    # то находиться ее площадь и прибавляется к площади отключения
-                    square = moduleSquare.getSquare(bordersCountries[i], len(bordersCountries[i]))
-                    squareOutage += square
-                    break
-        
-        # Прекращение чтения файла
-        break
-
+while amountBuildings != -1:
     # Чтение координат x и y построек и создание списка 
     # из точек с такими координатами
     points = []
@@ -65,11 +39,34 @@ while True:
     hull = moduleHull.getHull(points, len(points))
 
     # Сортировка точек оболочки против часовой стрелки
-    sortedHull =\
-     moduleSortCounterClockwise.sortCounterClockwise(hull, len(hull))
+    sortedHull = \
+     moduleCounterClockwise.sortCounterClockwise(hull, len(hull))
 
     # Добавление отсортированной оболочки в список границ стран
     bordersCountries.append(sortedHull)
+
+    amountBuildings = int(fileInput.readline())
+
+# Строка координат рокет
+rocketCoordinatesLine = fileInput.readline()
+
+while rocketCoordinatesLine:
+    # Чтение координат x и y рокеты и создание точки
+    # с такими координатами
+    x, y = map(int, rocketCoordinatesLine.split())
+    point = [x, y]
+
+    # Проверка всех стран на расположение точки внутри них
+    for i in range(len(bordersCountries)):
+        if modulePointInside.isPointInside(point, \
+            bordersCountries[i], len(bordersCountries[i])):
+            # Если точка расположена в стране,
+            # то находиться ее площадь и прибавляется к площади отключения
+            square = moduleSquare.getSquare(bordersCountries[i], len(bordersCountries[i]))
+            squareOutage += square
+            break
+        
+    rocketCoordinatesLine = fileInput.readline()
 
 # Закрытие входного файла
 fileInput.close()

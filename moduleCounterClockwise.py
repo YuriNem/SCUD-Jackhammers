@@ -7,7 +7,7 @@ def sortCounterClockwise(hull, lengthHull):
     def closureCenter(centerPoint):
         # Нахождение угола против часовой стрелки
         def getCounterClockwiseAngle(point):
-            return math.degrees(math.atan2(point[1] - centerPoint[1],\
+            return math.degrees(math.atan2(point[1] - centerPoint[1], \
              point[0] - centerPoint[0]))
         
         return getCounterClockwiseAngle
